@@ -1,0 +1,110 @@
+{
+  "info": {
+    "name": "API Productos - Laravel (imagen polimorfica)",
+    "description": "Coleccion para probar los endpoints de /api/products del examen practico.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api" },
+    { "key": "product_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1. Listar productos (index)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{base_url}}/products"
+      }
+    },
+    {
+      "name": "2. Crear producto con imagen (store)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Teclado Mecanico RGB", "type": "text" },
+            { "key": "description", "value": "Teclado mecanico retroiluminado, switches azules", "type": "text" },
+            { "key": "price", "value": "899.99", "type": "text" },
+            { "key": "stock", "value": "25", "type": "text" },
+            { "key": "image", "type": "file", "src": [] }
+          ]
+        },
+        "url": "{{base_url}}/products"
+      }
+    },
+    {
+      "name": "3. Ver detalle de producto (show)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{base_url}}/products/{{product_id}}"
+      }
+    },
+    {
+      "name": "4. Actualizar producto (update, con _method=PUT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "_method", "value": "PUT", "type": "text" },
+            { "key": "name", "value": "Teclado Mecanico RGB PRO", "type": "text" },
+            { "key": "description", "value": "Edicion PRO, switches rojos", "type": "text" },
+            { "key": "price", "value": "999.99", "type": "text" },
+            { "key": "stock", "value": "40", "type": "text" },
+            { "key": "image", "type": "file", "src": [] }
+          ]
+        },
+        "url": "{{base_url}}/products/{{product_id}}"
+      }
+    },
+    {
+      "name": "5. Eliminar producto (destroy)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{base_url}}/products/{{product_id}}"
+      }
+    },
+    {
+      "name": "6. CP-06 Crear sin campos obligatorios (debe dar 422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "", "type": "text" }
+          ]
+        },
+        "url": "{{base_url}}/products"
+      }
+    },
+    {
+      "name": "7. CP-08 Consultar producto inexistente (debe dar 404)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{base_url}}/products/999999"
+      }
+    }
+  ]
+}
