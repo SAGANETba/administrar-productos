@@ -1,0 +1,55 @@
+
+===== CP-01 Crear producto con imagen (POST /api/products) =====
+REQUEST: multipart/form-data name,description,price,stock,image=producto-valido.png
+RESPONSE: HTTP 201
+{"data":{"id":1,"name":"Teclado Mecanico RGB","description":"Teclado mecanico retroiluminado, switches azules","price":899.99,"stock":25,"image":{"id":1,"path":"products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png","url":"http:\/\/localhost:8000\/storage\/products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png"},"created_at":"2026-07-09T21:30:26.000000Z","updated_at":"2026-07-09T21:30:26.000000Z"}}
+
+===== CP-06 Crear producto sin campos obligatorios (POST /api/products) =====
+REQUEST: multipart/form-data con solo name vacio, sin description/price/stock/image
+RESPONSE: HTTP 422
+{"message":"The name field is required. (and 4 more errors)","errors":{"name":["The name field is required."],"description":["The description field is required."],"price":["The price field is required."],"stock":["The stock field is required."],"image":["The image field is required."]}}
+
+===== CP-07 Subir archivo que no es imagen (POST /api/products) =====
+REQUEST: multipart/form-data con image=archivo-invalido.txt (text/plain)
+RESPONSE: HTTP 422
+{"message":"The image field must be an image. (and 1 more error)","errors":{"image":["The image field must be an image.","The image field must be a file of type: jpg, jpeg, png, gif, webp."]}}
+
+===== CP-02 Listar productos (GET /api/products) =====
+REQUEST: sin body
+RESPONSE: HTTP 200
+{"data":[{"id":1,"name":"Teclado Mecanico RGB","description":"Teclado mecanico retroiluminado, switches azules","price":899.99,"stock":25,"image":{"id":1,"path":"products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png","url":"http:\/\/localhost:8000\/storage\/products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png"},"created_at":"2026-07-09T21:30:26.000000Z","updated_at":"2026-07-09T21:30:26.000000Z"}]}
+
+===== CP-03 Consultar detalle de producto (GET /api/products/1) =====
+REQUEST: sin body
+RESPONSE: HTTP 200
+{"data":{"id":1,"name":"Teclado Mecanico RGB","description":"Teclado mecanico retroiluminado, switches azules","price":899.99,"stock":25,"image":{"id":1,"path":"products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png","url":"http:\/\/localhost:8000\/storage\/products\/9TEf7Yojv6UsGrmk8uBLKvPCWvH6uVZmql83BN5N.png"},"created_at":"2026-07-09T21:30:26.000000Z","updated_at":"2026-07-09T21:30:26.000000Z"}}
+
+===== CP-04 Actualizar producto y su imagen (PUT /api/products/1, enviado como POST + _method=PUT) =====
+REQUEST: multipart/form-data name,description,price,stock,image=producto-actualizado.png,_method=PUT
+RESPONSE: HTTP 200
+{"data":{"id":1,"name":"Teclado Mecanico RGB PRO","description":"Teclado mecanico retroiluminado, switches rojos, edicion PRO","price":999.99,"stock":40,"image":{"id":2,"path":"products\/rjiqUZo78IXowLJ1uGY9Ya11zy5PIY0Vw2Y5MgLo.png","url":"http:\/\/localhost:8000\/storage\/products\/rjiqUZo78IXowLJ1uGY9Ya11zy5PIY0Vw2Y5MgLo.png"},"created_at":"2026-07-09T21:30:26.000000Z","updated_at":"2026-07-09T21:30:26.000000Z"}}
+
+===== Verificacion: acceso publico al archivo de imagen (GET http://localhost:8000/storage/products/rjiqUZo78IXowLJ1uGY9Ya11zy5PIY0Vw2Y5MgLo.png) =====
+REQUEST: sin body
+RESPONSE: HTTP 200
+Content-Type: image/png  Bytes: 68
+
+===== CP-08 Consultar producto inexistente (GET /api/products/999999) =====
+REQUEST: sin body
+RESPONSE: HTTP 404
+{"message":"Recurso no encontrado."}
+
+===== CP-05 Eliminar producto (DELETE /api/products/1) =====
+REQUEST: sin body
+RESPONSE: HTTP 200
+{"message":"Producto eliminado correctamente."}
+
+===== Verificacion post-DELETE: consultar producto eliminado (GET /api/products/1) =====
+REQUEST: sin body
+RESPONSE: HTTP 404
+{"message":"Recurso no encontrado."}
+
+===== Producto de demostracion dejado en la base de datos entregada (POST /api/products) =====
+REQUEST: multipart/form-data name,description,price,stock,image=producto-valido.png
+RESPONSE: HTTP 201
+{"data":{"id":2,"name":"Mouse Inalambrico Ergonomico","description":"Mouse inalambrico con sensor optico de alta precision","price":349.5,"stock":60,"image":{"id":3,"path":"products\/nYdZxl46RifunoVO6c8OWDqT0JzyhSNUxJDp04YW.png","url":"http:\/\/localhost:8000\/storage\/products\/nYdZxl46RifunoVO6c8OWDqT0JzyhSNUxJDp04YW.png"},"created_at":"2026-07-09T21:30:29.000000Z","updated_at":"2026-07-09T21:30:29.000000Z"}}
