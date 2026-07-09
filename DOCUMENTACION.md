@@ -4,9 +4,9 @@
 
 | Dato | Información |
 |---|---|
-| Alumno | *(completar)* |
-| Grupo | *(completar)* |
-| Docente | *(completar)* |
+| Alumno | Benitez Pardo Gadiel |
+| Grupo | 05_01|
+| Docente | Miguel Angel Montoya Cerro |
 | Fecha | 09/07/2026 |
 | Duración | 1 sesión práctica |
 | Puntaje total | 100 puntos |
