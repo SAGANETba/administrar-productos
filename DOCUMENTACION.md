@@ -131,13 +131,15 @@ Adicionalmente, se personalizó `app/Exceptions/Handler.php` para que **cualquie
 | Campo | Detalle |
 |---|---|
 | Objetivo | Comprobar que `POST /api/products` crea el producto y su imagen asociada. |
-| Precondiciones | Servidor activo, base de datos migrada, sin producto previo. |
-| Datos de entrada | `name=Teclado Mecanico RGB`, `description=...`, `price=899.99`, `stock=25`, `image=producto-valido.png` |
-| Pasos | Enviar POST multipart/form-data a `/api/products` con los campos anteriores. |
+| Precondiciones | Servidor activo, base de datos migrada. |
+| Datos de entrada | `name=AirPods Max`, `description=comodos y con una bateria de hasta 8 hrs`, `price=1200`, `stock=5`, `image=airpods max.jpeg` |
+| Pasos | Enviar POST form-data a `/api/products` con los campos anteriores (probado directamente en Postman). |
 | Resultado esperado | HTTP 201 y JSON con el producto creado, incluyendo objeto `image` con `url`. |
-| Resultado real | **HTTP 201** — `{"data":{"id":1,"name":"Teclado Mecanico RGB",...,"image":{"id":1,"path":"products/...png","url":"http://localhost:8000/storage/products/...png"}}}` |
+| Resultado real | **HTTP 201 Created** — se creó el producto `id: 3` con su imagen asociada `image.id: 3`, `url` accesible en `/storage/products/...jpg`. |
 | Estado | ✅ Aprobado |
-| Evidencia | `evidencias.txt` sección "CP-01" |
+| Evidencia | Captura de Postman (ver abajo) y `evidencias.txt` sección "CP-01" |
+
+![CP-01: POST /api/products crea el producto AirPods Max, HTTP 201](storage/app/test-assets/postman/cp-01-store.png)
 
 ### CP-02 — Listar productos registrados
 | Campo | Detalle |
@@ -145,47 +147,55 @@ Adicionalmente, se personalizó `app/Exceptions/Handler.php` para que **cualquie
 | Objetivo | Comprobar que `GET /api/products` retorna la lista de productos con su información básica e imagen. |
 | Precondiciones | Al menos un producto creado (CP-01). |
 | Datos de entrada | Ninguno (GET). |
-| Pasos | Enviar GET a `/api/products`. |
-| Resultado esperado | HTTP 200 y arreglo `data` con el producto creado en CP-01. |
-| Resultado real | **HTTP 200** — `{"data":[{"id":1,"name":"Teclado Mecanico RGB",...}]}` |
+| Pasos | Enviar GET a `/api/products` en Postman. |
+| Resultado esperado | HTTP 200 y arreglo `data` con todos los productos registrados. |
+| Resultado real | **HTTP 200 OK** — la respuesta incluye los 3 productos existentes en ese momento ("AirPods Max", "audifonos bluethoot" y "Mouse Inalambrico Ergonomico"), cada uno con su imagen asociada. |
 | Estado | ✅ Aprobado |
-| Evidencia | `evidencias.txt` sección "CP-02" |
+| Evidencia | Captura de Postman (ver abajo) y `evidencias.txt` sección "CP-02" |
+
+![CP-02: GET /api/products lista todos los productos, HTTP 200](storage/app/test-assets/postman/cp-02-index.png)
 
 ### CP-03 — Consultar detalle de producto con imagen
 | Campo | Detalle |
 |---|---|
 | Objetivo | Comprobar que `GET /api/products/{id}` retorna el detalle completo, incluyendo la imagen. |
-| Precondiciones | Producto con id=1 existente (CP-01). |
-| Datos de entrada | id=1 en la URL. |
-| Pasos | Enviar GET a `/api/products/1`. |
+| Precondiciones | Producto con id=3 existente (CP-01). |
+| Datos de entrada | id=3 en la URL. |
+| Pasos | Enviar GET a `/api/products/3` en Postman. |
 | Resultado esperado | HTTP 200 con el detalle del producto e imagen asociada. |
-| Resultado real | **HTTP 200** — detalle completo con `image.url` accesible. |
+| Resultado real | **HTTP 200 OK** — detalle completo de "AirPods Max" con `image.url` accesible en `/storage/products/...jpg`. |
 | Estado | ✅ Aprobado |
-| Evidencia | `evidencias.txt` sección "CP-03" |
+| Evidencia | Captura de Postman (ver abajo) y `evidencias.txt` sección "CP-03" |
+
+![CP-03: GET /api/products/3 muestra el detalle del producto, HTTP 200](storage/app/test-assets/postman/cp-03-show.png)
 
 ### CP-04 — Actualizar datos del producto (y su imagen)
 | Campo | Detalle |
 |---|---|
 | Objetivo | Comprobar que `PUT /api/products/{id}` actualiza los datos y reemplaza la imagen, eliminando la anterior. |
-| Precondiciones | Producto con id=1 existente. |
-| Datos de entrada | `name=Teclado Mecanico RGB PRO`, `price=999.99`, `stock=40`, `image=producto-actualizado.png`, `_method=PUT` (enviado como POST multipart, ya que PHP no puebla `$_FILES` en peticiones PUT nativas). |
-| Pasos | Enviar POST a `/api/products/1` con `_method=PUT` y los campos anteriores. |
+| Precondiciones | Producto con id=3 existente. |
+| Datos de entrada | `name=AirPods Max`, `price=2500`, `stock=6`, `image=airpods max.jpeg`, `_method=PUT` (enviado como POST form-data, ya que PHP no puebla `$_FILES` en peticiones PUT nativas). |
+| Pasos | Enviar POST a `/api/products/3` con `_method=PUT` y los campos anteriores, en Postman. |
 | Resultado esperado | HTTP 200, datos actualizados, nueva imagen asociada (id de imagen distinto al anterior) y archivo anterior eliminado del disco. |
-| Resultado real | **HTTP 200** — nombre/precio/stock actualizados; `image.id` cambió de 1 a 2 (imagen anterior eliminada del disco y de la BD). Se verificó además que la nueva imagen es accesible públicamente: `GET /storage/products/....png` → **HTTP 200**, `Content-Type: image/png`. |
+| Resultado real | **HTTP 200 OK** — precio actualizado de 1200 a 2500 y stock de 5 a 6; `image.id` cambió de 3 a 4 (imagen anterior eliminada del disco y de la BD, nueva imagen accesible en `/storage/products/...jpg`). |
 | Estado | ✅ Aprobado |
-| Evidencia | `evidencias.txt` secciones "CP-04" y "Verificación: acceso público al archivo de imagen" |
+| Evidencia | Captura de Postman (ver abajo) y `evidencias.txt` secciones "CP-04" y "Verificación: acceso público al archivo de imagen" |
+
+![CP-04: PUT /api/products/3 actualiza precio, stock e imagen, HTTP 200](storage/app/test-assets/postman/cp-04-update.png)
 
 ### CP-05 — Eliminar producto
 | Campo | Detalle |
 |---|---|
 | Objetivo | Comprobar que `DELETE /api/products/{id}` elimina el producto, su registro de imagen y el archivo físico. |
-| Precondiciones | Producto con id=1 existente. |
-| Datos de entrada | id=1 en la URL. |
-| Pasos | Enviar DELETE a `/api/products/1`. |
+| Precondiciones | Producto con id=3 existente. |
+| Datos de entrada | id=3 en la URL. |
+| Pasos | Enviar DELETE a `/api/products/3` en Postman. |
 | Resultado esperado | HTTP 200 con mensaje de confirmación; el producto deja de existir. |
-| Resultado real | **HTTP 200** — `{"message":"Producto eliminado correctamente."}`. Verificado con un GET posterior al mismo id → 404. |
+| Resultado real | **HTTP 200 OK** — `{"message":"Producto eliminado correctamente."}`. Verificado con un GET posterior al mismo id → 404. |
 | Estado | ✅ Aprobado |
-| Evidencia | `evidencias.txt` secciones "CP-05" y "Verificación post-DELETE" |
+| Evidencia | Captura de Postman (ver abajo) y `evidencias.txt` secciones "CP-05" y "Verificación post-DELETE" |
+
+![CP-05: DELETE /api/products/3 elimina el producto, HTTP 200](storage/app/test-assets/postman/cp-05-destroy.png)
 
 ### CP-06 — Crear producto sin campos obligatorios
 | Campo | Detalle |
