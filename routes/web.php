@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Vista simple solo para revisar visualmente los productos (no forma parte de la API REST).
+Route::get('/productos', function () {
+    $products = Product::with('image')->latest()->get();
+
+    return view('productos', ['products' => $products]);
 });
