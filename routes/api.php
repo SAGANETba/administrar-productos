@@ -19,4 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/products/stock-bajo', [ProductController::class, 'stockBajo']);
+
 Route::apiResource('products', ProductController::class);
