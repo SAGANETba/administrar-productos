@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -114,5 +115,46 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Producto eliminado correctamente.',
         ], 200);
+    }
+
+    /**
+     * GET /api/products/{product}/imagen
+     * Devuelve unicamente la imagen asociada al producto (relacion morphOne).
+     */
+    public function imagen(Product $product): JsonResponse
+    {
+        if (! $product->image) {
+            return response()->json([
+                'message' => 'Este producto no tiene imagen asociada.',
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => [
+                'id' => $product->image->id,
+                'path' => $product->image->path,
+                'url' => $product->image->url,
+            ],
+        ]);
+    }
+
+    /**
+     * DELETE /api/products/{product}/imagen
+     * Elimina solo la imagen del producto (registro + archivo), sin borrar el producto.
+     */
+    public function eliminarImagen(Product $product): JsonResponse
+    {
+        if (! $product->image) {
+            return response()->json([
+                'message' => 'Este producto no tiene imagen asociada.',
+            ], 404);
+        }
+
+        Storage::disk('public')->delete($product->image->path);
+        $product->image->delete();
+
+        return response()->json([
+            'message' => 'Imagen del producto eliminada correctamente.',
+        ], Response::HTTP_OK);
     }
 }

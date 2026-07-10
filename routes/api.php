@@ -19,6 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/products/stock-bajo', [ProductController::class, 'stockBajo']);
+Route::get('/products/stock-bajo', [ProductController::class, 'stockBajo'])->name('products.stockBajo');
+
+Route::get('/products/{product}/imagen', [ProductController::class, 'imagen'])->name('products.imagen');
+Route::delete('/products/{product}/imagen', [ProductController::class, 'eliminarImagen'])->name('products.imagen.destroy');
 
 Route::apiResource('products', ProductController::class);
